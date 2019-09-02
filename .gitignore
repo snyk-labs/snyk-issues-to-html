@@ -81,3 +81,5 @@ typings/
 
 # Typescript build directory
 dist/
+
+*.html
