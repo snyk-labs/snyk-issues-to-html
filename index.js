@@ -1,48 +1,12 @@
+"use strict";
+
 const fs = require("fs");
-const { Client, Errors } = require("../snyk-api/dist/index");
-const config = {
-  api: process.env.SNYK_TOKEN
-};
+const { Client } = require("../snyk-api/dist/index");
 const hbs = require("handlebars");
 const moment = require("moment");
 
-const snykClient = new Client({
-  token: config.api
-});
-
-async function getIssues() {
-  const filters = {
-    date: {
-      from: "2019-01-01",
-      to: "2019-10-01"
-    },
-    orgs: ["a30b7399-4e0c-4f6e-ba84-b27e131db54c"],
-    severity: ["high", "medium", "low"],
-    types: ["vuln", "license"],
-    languages: [
-      "node",
-      "ruby",
-      "java",
-      "scala",
-      "python",
-      "golang",
-      "php",
-      "dotnet"
-    ],
-    ignored: false,
-    patched: false,
-    fixable: false,
-    isFixed: false,
-    isUpgradable: false,
-    isPatchable: false
-  };
-
-  const res = await snykClient.issues.getAll({ filters });
-  return res;
-}
-
-async function main() {
-  const data = await getIssues();
+module.exports = async function main({ token, filters }) {
+  const data = await getIssues({ token, filters });
 
   const cssFile = fs.readFileSync(
     "./template/test-report.inline-css.hbs",
@@ -107,9 +71,42 @@ async function main() {
   };
 
   const html = issuesTemplate(templateData);
-  fs.writeFileSync("output.html", html);
-}
+  fs.writeFileSync("snyk-reported-issues.html", html);
+};
 
-main().catch(err => {
-  console.error(err);
-});
+async function getIssues({ token, filters }) {
+  const defaultFilters = {
+    date: {
+      from: "2019-01-01",
+      to: "2019-10-01"
+    },
+    orgs: ["a30b7399-4e0c-4f6e-ba84-b27e131db54c"],
+    severity: ["high", "medium", "low"],
+    types: ["vuln", "license"],
+    languages: [
+      "node",
+      "ruby",
+      "java",
+      "scala",
+      "python",
+      "golang",
+      "php",
+      "dotnet"
+    ],
+    ignored: false,
+    patched: false,
+    fixable: false,
+    isFixed: false,
+    isUpgradable: false,
+    isPatchable: false
+  };
+
+  const snykClient = new Client({
+    token: token || process.env.SNYK_TOKEN
+  });
+
+  const issuesFilters = filters || defaultFilters;
+
+  const res = await snykClient.issues.getAll({ filters: issuesFilters });
+  return res;
+}
