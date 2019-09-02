@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Language" content="en-us">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Snyk issues report</title>
+  <meta name="description" content="{{uniqueCount}} issues found in {{summary}}.">
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/snyk/image/upload/v1468845142/favicon/favicon.png"
+    sizes="194x194">
+  <link rel="shortcut icon" href="https://res.cloudinary.com/snyk/image/upload/v1468845142/favicon/favicon.ico">
+  {{> inline-css }}
+</head>
+
+<body class="section-projects">
+  <main class="layout-stacked">
+
+    <div class="layout-stacked__header header">
+      <header class="project__header">
+        <div class="layout-container--short">
+          <h1 class="project__header__title">Snyk issues report</h1>
+          <p class="timestamp">{{moment d "MMMM Do YYYY, h:mm:ss a"}}</p>
+          {{#if paths}}
+          <div class="source-panel">
+            <span>Scanned the following paths:</span>
+            <ul>
+              {{#each paths}}<li>{{path}} ({{packageManager}})</li>{{/each}}
+            </ul>
+          </div>
+          {{/if}}
+          {{#if path}}
+          <div class="source-panel">
+            <span>Scanned the following path:</span>
+            <ul>
+              <li>{{path}} ({{packageManager}})</li>
+            </ul>
+          </div>
+          {{/if}}
+
+          <div class="meta-counts">
+            <div class="meta-count"><span>{{issuesUniqueCount}}</span> <span>issues detected</span></div>
+            <div class="meta-count"><span>{{projectsUniqueCount}}</span> <span>projects impacted</span></div>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <div class="layout-stacked__content">
+      <div class="layout-container--short" style="padding-top: 35px;">
+        <div class="cards--vuln">
+          {{#each issues }}
+          {{> issue-card }}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+  </main>
+</body>
+
+</html>

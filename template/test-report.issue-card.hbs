@@ -1,0 +1,46 @@
+<div class="card card--vuln  disclosure--not-new severity--{{issue.severity}}">
+    <h2 class="card__title">{{issue.title}}</h2>
+    <div class="card__section">
+
+        <div class="label label--{{issue.severity}}">
+            <span class="label__text">{{issue.severity}} severity</span>
+        </div>
+
+        <hr />
+
+        <ul class="card__meta">
+            <li class="card__meta__item">
+                Issue found in: <em><a
+                        href="https://snyk.io/vuln/{{issue.packageManager}}:{{issue.package}}">{{issue.package}}</a>
+                    {{issue.version}}</em>
+            </li>
+            <li class="card__meta__item">
+                Package manager: {{issue.packageManager}}
+            </li>
+
+            <li class="card__meta__item">
+                CVEs: {{#each issue.identifiers}} {{this}} {{/each}}
+            </li>
+        </ul>
+
+        <hr />
+
+        <h3 class="card__section__title">Projects total: {{ projects.count }}</h3>
+        <ul class="card__meta">
+            {{#each projects.data }}
+            <li class="card__meta__item">
+                <a href="{{url}}">{{name}}</a>
+            </li>
+            {{/each}}
+        </ul>
+
+
+        <hr />
+
+    </div><!-- .card__section -->
+
+    <div class="cta card__cta">
+        <p><a href="https://snyk.io/vuln/{{issue.id}}">More about this vulnerability</a></p>
+    </div>
+
+</div><!-- .card -->
