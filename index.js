@@ -77,8 +77,10 @@ module.exports = async function main({ token, filters }) {
 async function getIssues({ token, filters }) {
   const defaultFilters = {
     date: {
-      from: "2019-01-01",
-      to: "2019-10-01"
+      from: moment()
+        .subtract(90, "days")
+        .format("YYYY-MM-DD"),
+      to: moment().format("YYYY-MM-DD")
     },
     orgs: ["a30b7399-4e0c-4f6e-ba84-b27e131db54c"],
     severity: ["high", "medium", "low"],
