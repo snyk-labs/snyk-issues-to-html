@@ -5,8 +5,8 @@ const { Client } = require("../snyk-api/dist/index");
 const hbs = require("handlebars");
 const moment = require("moment");
 
-module.exports = async function main({ token, filters }) {
-  const data = await getIssues({ token, filters });
+module.exports = async function main({ orgs, token, filters }) {
+  const data = await getIssues({ orgs, token, filters });
 
   const cssFile = fs.readFileSync(
     "./template/test-report.inline-css.hbs",
@@ -74,7 +74,7 @@ module.exports = async function main({ token, filters }) {
   fs.writeFileSync("snyk-reported-issues.html", html);
 };
 
-async function getIssues({ token, filters }) {
+async function getIssues({ orgs, token, filters }) {
   const defaultFilters = {
     date: {
       from: moment()
@@ -82,7 +82,7 @@ async function getIssues({ token, filters }) {
         .format("YYYY-MM-DD"),
       to: moment().format("YYYY-MM-DD")
     },
-    orgs: ["a30b7399-4e0c-4f6e-ba84-b27e131db54c"],
+    orgs: orgs,
     severity: ["high", "medium", "low"],
     types: ["vuln", "license"],
     languages: [
