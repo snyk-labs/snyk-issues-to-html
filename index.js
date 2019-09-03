@@ -5,19 +5,26 @@ const { Client } = require("../snyk-api/dist/index");
 const hbs = require("handlebars");
 const moment = require("moment");
 
-module.exports = async function main({ orgs, token, filters }) {
-  const data = await getIssues({ orgs, token, filters });
+const TEMPLATE_CSS = "./template/test-report.inline-css.hbs";
+const TEMPLATE_ISSUE_CARD = "./template/test-report.issue-card.hbs";
+const TEMPLATE_LAYOUT = "./template/test-report.hbs";
 
-  const cssFile = fs.readFileSync(
-    "./template/test-report.inline-css.hbs",
-    "utf-8"
-  );
+module.exports = async function main({ orgs, token, filters }) {
+  composeTemplatePartials();
+
+  const issuesTemplateFile = fs.readFileSync(TEMPLATE_LAYOUT, "utf-8");
+  const issuesTemplate = hbs.compile(issuesTemplateFile);
+  const templateData = await composeDataForTemplate({ orgs, token, filters });
+  const html = issuesTemplate(templateData);
+
+  fs.writeFileSync("snyk-reported-issues.html", html);
+};
+
+function composeTemplatePartials() {
+  const cssFile = fs.readFileSync(TEMPLATE_CSS, "utf-8");
   const cssPartial = hbs.compile(cssFile);
 
-  const issueCardFile = fs.readFileSync(
-    "./template/test-report.issue-card.hbs",
-    "utf-8"
-  );
+  const issueCardFile = fs.readFileSync(TEMPLATE_ISSUE_CARD, "utf-8");
   const issueCardPartial = hbs.compile(issueCardFile);
 
   hbs.registerPartial("inline-css", cssPartial);
@@ -26,18 +33,16 @@ module.exports = async function main({ orgs, token, filters }) {
   hbs.registerHelper("moment", (date, format) =>
     moment.utc(date).format(format)
   );
+}
 
-  const issuesTemplateFile = fs.readFileSync(
-    "./template/test-report.hbs",
-    "utf-8"
-  );
-
-  const issuesTemplate = hbs.compile(issuesTemplateFile);
+async function composeDataForTemplate({ orgs, token, filters }) {
+  const data = await getIssues({ orgs, token, filters });
 
   let issues = {};
   let issuesUniqueCount = 0;
   let projectsUniqueCount = 0;
   let projectsAffected = {};
+
   data.forEach((item, index) => {
     const issue = item.issue;
     const project = item.project;
@@ -70,9 +75,8 @@ module.exports = async function main({ orgs, token, filters }) {
     projectsUniqueCount: projectsUniqueCount
   };
 
-  const html = issuesTemplate(templateData);
-  fs.writeFileSync("snyk-reported-issues.html", html);
-};
+  return templateData;
+}
 
 async function getIssues({ orgs, token, filters }) {
   const defaultFilters = {
