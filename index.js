@@ -1,7 +1,7 @@
 "use strict";
 
 const fs = require("fs");
-const { Client } = require("../snyk-api/dist/index");
+const { Client } = require("../snyk-api-client/dist/src/index");
 const hbs = require("handlebars");
 const moment = require("moment");
 
@@ -90,21 +90,19 @@ async function getIssues({ orgs, token, filters }) {
     severity: ["high", "medium", "low"],
     types: ["vuln", "license"],
     languages: [
-      "node",
+      "javascript",
       "ruby",
       "java",
       "scala",
       "python",
       "golang",
       "php",
-      "dotnet"
+      "dotnet",
+      "linux"
     ],
     ignored: false,
     patched: false,
-    fixable: false,
-    isFixed: false,
-    isUpgradable: false,
-    isPatchable: false
+    isFixed: false
   };
 
   const snykClient = new Client({
