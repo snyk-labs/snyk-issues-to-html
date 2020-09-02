@@ -27,7 +27,7 @@
     "url": "https://github.com/snyk-labs/snyk-issues-to-html.git"
   },
   "dependencies": {
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.3.0",
     "moment": "^2.24.0",
     "yargs": "^14.0.0"
   }
