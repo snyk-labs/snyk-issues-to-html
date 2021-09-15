@@ -29,6 +29,6 @@
   "dependencies": {
     "handlebars": "^4.3.0",
     "moment": "^2.24.0",
-    "yargs": "^14.0.0"
+    "yargs": "^15.0.1"
   }
 }
